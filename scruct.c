@@ -30,13 +30,30 @@ struct Field
     };
 };
 
+
+
+void field_free(Field* field)
+{
+    if(field)
+    {
+        if(field->type == TYPE_STRING)
+        {
+            if(field->string)
+            {
+                free(field->string);
+            }
+        }
+        free(field);
+    }
+}
+
 typedef struct Object Object;
 
 struct Object
 {
     uint32_t id;
     uint32_t field_count;
-    Field *fields;
+    Field **fields;
 };
 
 
@@ -68,9 +85,9 @@ Field* object_get_field(Object *obj, char* name)
     uint32_t i;
     for(i=0; i<obj->field_count; ++i)
     {
-        if(strcmp(name, obj->fields[i].name) == 0)
+        if(strcmp(name, obj->fields[i]->name) == 0)
         {
-            return &obj->fields[i];
+            return obj->fields[i];
         }
     }
     return NULL;
